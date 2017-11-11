@@ -1,3 +1,5 @@
+#ifndef DEBUGGING_HELPERS
+#define DEBUGGING_HELPERS
 /**
 	debugging_helpers.cpp
 	
@@ -50,3 +52,4 @@ void show_grid(vector < vector <char> > map) {
 	}
 }
 
+#endif 

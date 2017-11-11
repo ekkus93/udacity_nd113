@@ -1,3 +1,5 @@
+#ifndef HELPERS
+#define HELPERS
 /**
 	helpers.cpp
 
@@ -15,7 +17,7 @@
 #include <cmath>
 #include <string>
 #include <fstream> 
-// #include "debugging_helpers.cpp"
+#include "debugging_helpers.cpp"
 
 using namespace std;
 
@@ -99,14 +101,7 @@ vector< vector<float> > normalize(vector< vector <float> > grid) {
     @return - a new normalized two dimensional grid where probability 
     	   has been blurred.
 */
-vector <float> float_arr_to_float_vector(float arr[]) {
-  vector<float> vec (arr, arr + sizeof(*arr) / sizeof(arr[0]) );
-
-  return vec;
-}
-
 vector < vector <float> > blur(vector < vector < float> > grid, float blurring) {
-
         vector < vector <float> > newGrid;
 	
 	// your code here
@@ -121,21 +116,28 @@ vector < vector <float> > blur(vector < vector < float> > grid, float blurring) 
 	}
 
 	// multiplier grid
+	float singleUnit = blurring/12.0;
+	float doubleUnit = 2.0 * singleUnit;	
+	
 	float  multiplierArr[3][3] = {  
-	  {0.01, 0.02, 0.01} ,   
-	  {0.02, -0.12, 0.02} ,   
-	  {0.01, 0.02, 0.01}   
+	  {singleUnit, doubleUnit, singleUnit} ,   
+	  {doubleUnit, -blurring, doubleUnit} ,   
+	  {singleUnit, doubleUnit, singleUnit}   
 	};
 	
 	for(int i=0; i<grid.size(); i++) {
 	  for(int j=0; j<grid.size(); j++) {
-	    for(int k=-1; k<2; k++) {
-	      for(int l=-1; l<2; l++) {
-		int curr_y = j-l;
-		int curr_x = i-k;
+	    if (grid[i][j] > 0.0) {
+	      // only blur if the current value is greater than 0.0
+	      for(int k=-1; k<2; k++) {
+		for(int l=-1; l<2; l++) {
+		  int curr_y = j+l;
+		  int curr_x = i+k;
 
-		if (curr_x >= 0 && curr_x < 3 && curr_y >= 0 && curr_y <3) {
-		  newGrid[curr_y][curr_x] += multiplierArr[k][l]; 
+		  if (curr_x >= 0 && curr_x < 3 && curr_y >= 0 && curr_y <3) {
+		    // only add the blur if it's not outside the bounds of the grid
+		    newGrid[curr_y][curr_x] += multiplierArr[k+1][l+1]; 
+		  }
 		}
 	      }
 	    }
@@ -283,3 +285,5 @@ vector < vector <float> > zeros(int height, int width) {
 // 	show_grid(map);
 // 	return 0;
 // }
+
+#endif 
